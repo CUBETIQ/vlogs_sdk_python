@@ -11,7 +11,7 @@ test:
 	poetry run python3 tests/test.py
 
 clean:
-	rm -rf dist
+	rm -rf dist && pip3 uninstall -y vlogs
 
 publish:
 	poetry publish --build

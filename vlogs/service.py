@@ -1,7 +1,7 @@
 import requests
 
-from model import CollectorResponse
-from config import BASE_URL
+from vlogs.model import CollectorResponse
+from vlogs.config import BASE_URL
 
 
 class VLogsService:

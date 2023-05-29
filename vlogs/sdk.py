@@ -1,7 +1,7 @@
-from model import Collector, CollectorResponse, SDKInfo, Target, VLogsOptions
-from service import VLogsService
-from util import get_system_hostname, get_system_username
-from config import BASE_URL
+from vlogs.model import Collector, CollectorResponse, SDKInfo, Target, VLogsOptions
+from vlogs.service import VLogsService
+from vlogs.util import get_system_hostname, get_system_username
+from vlogs.config import BASE_URL
 
 
 class VLogs:

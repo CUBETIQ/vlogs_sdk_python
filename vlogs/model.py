@@ -1,6 +1,6 @@
 import json
 import time
-from util import generate_uuid
+from vlogs.util import generate_uuid
 
 
 class CollectorType:
