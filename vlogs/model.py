@@ -167,7 +167,7 @@ class SDKInfo:
         self.hostname = hostname
         self.sender = sender
 
-    def toMap(self):
+    def to_map(self):
         return {
             'name': self.name,
             'version': self.version,
@@ -220,16 +220,16 @@ class SDKInfoBuilder:
 
 
 class Target:
-    def __init__(self, telegram=None, discord=None, sdkInfo=None):
+    def __init__(self, telegram: Telegram = None, discord: Discord = None, sdkInfo: SDKInfo = None):
         self.telegram = telegram
         self.discord = discord
         self.sdkInfo = sdkInfo
 
-    def toMap(self):
+    def to_map(self):
         return {
-            'telegram': self.telegram.toMap() if self.telegram else None,
-            'discord': self.discord.toMap() if self.discord else None,
-            'sdk_info': self.sdkInfo.toMap() if self.sdkInfo else None
+            'telegram': self.telegram.to_map() if self.telegram else None,
+            'discord': self.discord.to_map() if self.discord else None,
+            'sdk_info': self.sdkInfo.to_map() if self.sdkInfo else None
         }
 
     def merge(self, defaultTarget=None):
@@ -277,13 +277,13 @@ class TargetBuilder:
 
 
 class Collector:
-    def __init__(self, id=None, type=None, source=None, message=None, data=None, userAgent=None, timestamp=None, target=None, tags=None):
+    def __init__(self, id=None, type=None, source=None, message=None, data=None, useragent=None, timestamp=None, target=None, tags=None):
         self.id = id
         self.type = type
         self.source = source
         self.message = message
         self.data = data
-        self.userAgent = userAgent
+        self.useragent = useragent
         self.timestamp = timestamp
         self.target = target
         self.tags = tags
@@ -293,26 +293,26 @@ class Collector:
             self.id = generate_uuid()
         return self.id
 
-    def getTimestamp(self):
+    def get_timestamp(self):
         if not self.timestamp:
             self.timestamp = int(time.time() * 1000)
         return self.timestamp
 
-    def toMap(self):
+    def to_map(self):
         return {
             'id': self.getId(),
             'type': self.type,
             'source': self.source,
             'message': self.message,
             'data': self.data,
-            'user_agent': self.userAgent,
-            'timestamp': self.getTimestamp(),
-            'target': self.target.toMap() if self.target else None,
+            'user_agent': self.useragent,
+            'timestamp': self.get_timestamp(),
+            'target': self.target.to_map() if self.target else None,
             'tags': self.tags,
         }
 
     def toJson(self):
-        return json.dumps(self.toMap())
+        return json.dumps(self.to_map())
 
     @staticmethod
     def builder():
@@ -326,7 +326,7 @@ class CollectorBuilder:
         self._source = None
         self._message = None
         self._data = None
-        self._userAgent = None
+        self._useragent = None
         self._timestamp = None
         self._target = None
         self._tags = None
@@ -351,8 +351,8 @@ class CollectorBuilder:
         self._data = data
         return self
 
-    def userAgent(self, userAgent):
-        self._userAgent = userAgent
+    def useragent(self, useragent):
+        self._useragent = useragent
         return self
 
     def timestamp(self, timestamp):
@@ -374,7 +374,7 @@ class CollectorBuilder:
             source=self._source,
             message=self._message,
             data=self._data,
-            userAgent=self._userAgent,
+            useragent=self._useragent,
             timestamp=self._timestamp,
             target=self._target,
             tags=self._tags,
@@ -388,7 +388,7 @@ class CollectorResponse:
 
 
 class VLogsOptions:
-    def __init__(self, url=None, appId=None, apiKey=None, connectionTimeout=None, testConnection=None, target=None):
+    def __init__(self, url=None, appId=None, apiKey=None, connectionTimeout=None, testConnection=None, target: Target=None):
         self.url = url
         self.appId = appId
         self.apiKey = apiKey

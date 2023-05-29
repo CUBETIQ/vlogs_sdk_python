@@ -54,7 +54,7 @@ class VLogs:
         request.target.sdk_info = sdk_info
 
         # Append user agent to request
-        request.userAgent = f'vlogs-python-sdk/{VLogs.VERSION}-{VLogs.VERSION_CODE} ({hostname})'
+        request.useragent = f'vlogs-python-sdk/{VLogs.VERSION}-{VLogs.VERSION_CODE} ({hostname})'
 
         response = await self._service.post(request.to_map(), headers, self._options.connectionTimeout or VLogs.DEFAULT_CONNECT_TIMEOUT)
         return response
