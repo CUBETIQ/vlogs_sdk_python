@@ -16,9 +16,10 @@ pip install vlogs
 ```python
 from vlogs.sdk import VLogs, VLogsOptions
 from vlogs.model import Collector, CollectorType, CollectorSource
+import asyncio
 
-appId = "xx"
-apiKey = "vlogs_xx"
+appId = "72bd14c306a91fa8a590330e3898ddcc"
+apiKey = "vlogs_gX9WwSdKatMNdpUClLU0IfCx575tvdoeQ"
 
 # Create VLogs instance
 sdk = VLogs.create(
@@ -28,16 +29,19 @@ sdk = VLogs.create(
     .build()
 )
 
-response = sdk.collect(
-    Collector.builder()
-    .type(CollectorType.Error)
-    .source(CollectorSource.Other)
-    .message("This is a test message")
-    .build()
-)
+async def main():
+    response = await sdk.collect(
+        Collector.builder()
+        .type(CollectorType.Error)
+        .source(CollectorSource.Other)
+        .message("This is a test message")
+        .build()
+    )
 
-print("Response: ", response)
+    print("Response: ", response)
 
+# Run the async function
+asyncio.run(main())
 ```
 
 ### Build, Install, and Test from Source

@@ -19,9 +19,9 @@ def get_system_hostname():
 
 def get_system_username():
     name = 'unknown'
-    if hasattr(os, 'getlogin'):
+    try:
         name = os.getlogin()
-    elif 'USER' in os.environ:
-        name = os.environ['USER']
-
+    except OSError:
+        if 'USER' in os.environ:
+            name = os.environ['USER']
     return name
