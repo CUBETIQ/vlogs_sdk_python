@@ -9,15 +9,12 @@ class VLogsService:
         self.url = f"{base_url}/api/v1/collector"
 
     def post(self, body, headers=None, timeout=None):
-        config = {
-            "method": "POST",
-            "url": self.url,
-            "data": body,
-            "headers": headers,
-            "timeout": timeout * 1000 if timeout else None,
-        }
-
-        response = requests.post(**config)
+        response = requests.post(
+            data=body,
+            url=self.url,
+            headers=headers,
+            timeout=timeout * 1000 if timeout else None,
+        )
 
         if response.status_code in [200, 201, 202]:
             return CollectorResponse(**response.json())

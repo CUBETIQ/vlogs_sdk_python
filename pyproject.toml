@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "vlogs"
-version = "1.0.3"
+version = "1.0.4"
 description = "CUBETIQ vLogs SDK for Python"
 authors = ["Sambo Chea <sombochea@cubetiqs.com>"]
 license = "MIT"
