@@ -1,7 +1,7 @@
-from vlogs.model import Collector, CollectorResponse, SDKInfo, Target, VLogsOptions
-from vlogs.service import VLogsService
-from vlogs.util import get_system_hostname, get_system_username
-from vlogs.config import BASE_URL
+from model import Collector, CollectorResponse, SDKInfo, Target, VLogsOptions
+from service import VLogsService
+from util import get_system_hostname, get_system_username
+from config import BASE_URL
 
 
 class VLogs:
@@ -27,19 +27,18 @@ class VLogs:
         VLogs._logger(
             f'VLogs: Initialized AppID: {self._options.appId} | SDK Version: {VLogs.VERSION}-{VLogs.VERSION_CODE}')
 
-    async def collect(self, request: Collector) -> CollectorResponse:
-        VLogs._logger(f'VLogs: Collecting logs for {request.getId()}')
+    def collect(self, request: Collector) -> CollectorResponse:
+        VLogs._logger(f'VLogs: Collecting logs for {request.get_id()}')
 
         headers = {
             VLogs.APP_ID_HEADER_PREFIX: self._options.appId,
             VLogs.API_KEY_HEADER_PREFIX: self._options.apiKey,
-            'Content-Type': 'application/json',
         }
 
         hostname = get_system_hostname()
         sender = get_system_username()
         sdk_info = SDKInfo.builder().hostname(hostname).sender(sender).name(
-            VLogs.NAME).version(VLogs.VERSION).versionCode(VLogs.VERSION_CODE).build()
+            VLogs.NAME).version(VLogs.VERSION).version_code(VLogs.VERSION_CODE).build()
 
         if not request.target:
             if self._options.target:
@@ -56,7 +55,7 @@ class VLogs:
         # Append user agent to request
         request.useragent = f'vlogs-python-sdk/{VLogs.VERSION}-{VLogs.VERSION_CODE} ({hostname})'
 
-        response = await self._service.post(request.to_map(), headers, self._options.connectionTimeout or VLogs.DEFAULT_CONNECT_TIMEOUT)
+        response = self._service.post(request.to_map(), headers, self._options.connectionTimeout or VLogs.DEFAULT_CONNECT_TIMEOUT)
         return response
 
     @staticmethod

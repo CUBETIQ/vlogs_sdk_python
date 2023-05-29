@@ -1,6 +1,6 @@
 import json
 import time
-from vlogs.util import generate_uuid
+from util import generate_uuid
 
 
 class CollectorType:
@@ -160,10 +160,10 @@ class DiscordBuilder:
 
 
 class SDKInfo:
-    def __init__(self, name=None, version=None, versionCode=None, hostname=None, sender=None):
+    def __init__(self, name=None, version=None, version_code=None, hostname=None, sender=None):
         self.name = name
         self.version = version
-        self.versionCode = versionCode
+        self.version_code = version_code
         self.hostname = hostname
         self.sender = sender
 
@@ -171,7 +171,7 @@ class SDKInfo:
         return {
             'name': self.name,
             'version': self.version,
-            'version_code': self.versionCode,
+            'version_code': self.version_code,
             'hostname': self.hostname,
             'sender': self.sender
         }
@@ -185,7 +185,7 @@ class SDKInfoBuilder:
     def __init__(self):
         self._name = None
         self._version = None
-        self._versionCode = None
+        self._version_code = None
         self._hostname = None
         self._sender = None
 
@@ -197,8 +197,8 @@ class SDKInfoBuilder:
         self._version = version
         return self
 
-    def versionCode(self, versionCode):
-        self._versionCode = versionCode
+    def version_code(self, version_code):
+        self._version_code = version_code
         return self
 
     def hostname(self, hostname):
@@ -213,7 +213,7 @@ class SDKInfoBuilder:
         return SDKInfo(
             name=self._name,
             version=self._version,
-            versionCode=self._versionCode,
+            version_code=self._version_code,
             hostname=self._hostname,
             sender=self._sender
         )
@@ -227,9 +227,9 @@ class Target:
 
     def to_map(self):
         return {
-            'telegram': self.telegram.to_map() if self.telegram else None,
-            'discord': self.discord.to_map() if self.discord else None,
-            'sdk_info': self.sdkInfo.to_map() if self.sdkInfo else None
+            'telegram': self.telegram and self.telegram.to_map() or None,
+            'discord': self.discord and self.discord.to_map() or None,
+            'sdk_info': self.sdkInfo and self.sdkInfo.to_map() or None,
         }
 
     def merge(self, defaultTarget=None):
@@ -239,12 +239,12 @@ class Target:
         self.discord = self.discord or defaultTarget.discord
 
     @staticmethod
-    def withTelegram(chatId, token=None, parseMode=None, disabled=None, extras=None):
+    def with_telegram(chatId, token=None, parseMode=None, disabled=None, extras=None):
         telegram = Telegram(chatId, token, parseMode, disabled, extras)
         return Target(telegram=telegram)
 
     @staticmethod
-    def withDiscord(webhookUrl, webhookId=None, webhookToken=None, disabled=None, extras=None):
+    def with_discord(webhookUrl, webhookId=None, webhookToken=None, disabled=None, extras=None):
         discord = Discord(webhookUrl, webhookId,
                           webhookToken, disabled, extras)
         return Target(discord=discord)
@@ -277,7 +277,7 @@ class TargetBuilder:
 
 
 class Collector:
-    def __init__(self, id=None, type=None, source=None, message=None, data=None, useragent=None, timestamp=None, target=None, tags=None):
+    def __init__(self, id=None, type=None, source=None, message=None, data=None, useragent=None, timestamp=None, target: Target = None, tags=None):
         self.id = id
         self.type = type
         self.source = source
@@ -288,7 +288,7 @@ class Collector:
         self.target = target
         self.tags = tags
 
-    def getId(self):
+    def get_id(self):
         if not self.id:
             self.id = generate_uuid()
         return self.id
@@ -300,19 +300,16 @@ class Collector:
 
     def to_map(self):
         return {
-            'id': self.getId(),
+            'id': self.get_id(),
             'type': self.type,
             'source': self.source,
             'message': self.message,
             'data': self.data,
             'user_agent': self.useragent,
             'timestamp': self.get_timestamp(),
-            'target': self.target.to_map() if self.target else None,
+            'target': self.target and self.target.to_map() or None,
             'tags': self.tags,
         }
-
-    def toJson(self):
-        return json.dumps(self.to_map())
 
     @staticmethod
     def builder():
@@ -386,9 +383,18 @@ class CollectorResponse:
         self.message = message
         self.id = id
 
+    def to_map(self):
+        return {
+            'message': self.message,
+            'id': self.id
+        }
+
+    def __str__(self) -> str:
+        return json.dumps(self.to_map())
+
 
 class VLogsOptions:
-    def __init__(self, url=None, appId=None, apiKey=None, connectionTimeout=None, testConnection=None, target: Target=None):
+    def __init__(self, url=None, appId=None, apiKey=None, connectionTimeout=None, testConnection=None, target: Target = None):
         self.url = url
         self.appId = appId
         self.apiKey = apiKey

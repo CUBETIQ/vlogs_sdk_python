@@ -1,7 +1,7 @@
 import requests
 
-from vlogs.model import CollectorResponse
-from vlogs.config import BASE_URL
+from model import CollectorResponse
+from config import BASE_URL
 
 
 class VLogsService:
@@ -9,6 +9,7 @@ class VLogsService:
         self.url = f"{base_url}/api/v1/collector"
 
     def post(self, body, headers=None, timeout=None):
+        print("Body: ", body)
         response = requests.post(
             data=body,
             url=self.url,
@@ -16,6 +17,7 @@ class VLogsService:
             timeout=timeout * 1000 if timeout else None,
         )
 
+        print(response.text)
         if response.status_code in [200, 201, 202]:
             return CollectorResponse(**response.json())
         else:
