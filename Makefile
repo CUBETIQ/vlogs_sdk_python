@@ -8,7 +8,7 @@ install:
 	pip3 install dist/*.whl --force-reinstall
 
 test:
-	poetry run pytest
+	poetry run pytest -v
 
 clean:
 	rm -rf dist && pip3 uninstall -y vlogs

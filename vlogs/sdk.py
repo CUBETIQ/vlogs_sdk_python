@@ -1,8 +1,10 @@
-from vlogs.model import Collector, CollectorResponse, SDKInfo, Target, VLogsOptions
+import asyncio
+
+from vlogs.config import BASE_URL
+from vlogs.model import (Collector, CollectorResponse, SDKInfo, Target,
+                         VLogsOptions)
 from vlogs.service import VLogsService
 from vlogs.util import get_system_hostname, get_system_username
-from vlogs.config import BASE_URL
-import asyncio
 
 
 class VLogs:
@@ -60,8 +62,36 @@ class VLogs:
         ), headers, self._options.connection_timeout or VLogs.DEFAULT_CONNECT_TIMEOUT)
         return response
 
-    def collect_async(self, request: Collector) -> CollectorResponse:
-        asyncio.run(self.collect(request))
+    async def collect_async(self, request: Collector) -> CollectorResponse:
+        VLogs._logger(f'VLogs: Collecting logs for {request.get_id()}')
+
+        headers = {
+            VLogs.APP_ID_HEADER_PREFIX: self._options.appId,
+            VLogs.API_KEY_HEADER_PREFIX: self._options.apiKey,
+        }
+
+        hostname = get_system_hostname()
+        sender = get_system_username()
+        sdkInfo = SDKInfo.builder().hostname(hostname).sender(sender).name(
+            VLogs.NAME).version(VLogs.VERSION).version_code(VLogs.VERSION_CODE).build()
+
+        if not request.target:
+            if self._options.target:
+                request.target = self._options.target
+            else:
+                request.target = Target.builder().build()
+        else:
+            if self._options.target:
+                request.target.merge(self._options.target)
+
+        # Set SDK info to request
+        request.target.sdkInfo = sdkInfo
+
+        # Append user agent to request
+        request.useragent = f'vlogs-python-sdk/{VLogs.VERSION}-{VLogs.VERSION_CODE} ({hostname})'
+
+        return await self._service.post_async(request.to_map(
+        ), headers, self._options.connection_timeout or VLogs.DEFAULT_CONNECT_TIMEOUT)
 
     @staticmethod
     def create(options: VLogsOptions) -> 'VLogs':
