@@ -2,13 +2,13 @@
 all: build install test
 
 build:
-	poetry build
+	make clean && poetry build
 
 install:
 	pip3 install dist/*.whl --force-reinstall
 
 test:
-	poetry run python3 tests/test.py
+	poetry run pytest
 
 clean:
 	rm -rf dist && pip3 uninstall -y vlogs

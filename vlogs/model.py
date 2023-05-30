@@ -1,6 +1,6 @@
 import json
 import time
-from util import generate_uuid
+from vlogs.util import generate_uuid
 
 
 class CollectorType:
@@ -53,6 +53,9 @@ class Telegram:
             "disabled": self.disabled,
             "extras": self.extras,
         }
+
+    def __str__(self) -> str:
+        return json.dumps(self.to_map())
 
     @staticmethod
     def builder():
@@ -116,6 +119,9 @@ class Discord:
             "extras": self.extras,
         }
 
+    def __str__(self) -> str:
+        return json.dumps(self.to_map())
+
     @staticmethod
     def builder():
         return DiscordBuilder()
@@ -175,6 +181,9 @@ class SDKInfo:
             'hostname': self.hostname,
             'sender': self.sender
         }
+
+    def __str__(self) -> str:
+        return json.dumps(self.to_map())
 
     @staticmethod
     def builder():
@@ -237,6 +246,9 @@ class Target:
             return
         self.telegram = self.telegram or defaultTarget.telegram
         self.discord = self.discord or defaultTarget.discord
+
+    def __str__(self) -> str:
+        return str(self.to_map())
 
     @staticmethod
     def with_telegram(chatId, token=None, parseMode=None, disabled=None, extras=None):
@@ -310,6 +322,9 @@ class Collector:
             'target': self.target and self.target.to_map() or None,
             'tags': self.tags,
         }
+
+    def __str__(self):
+        return json.dumps(self.to_map())
 
     @staticmethod
     def builder():
@@ -394,12 +409,12 @@ class CollectorResponse:
 
 
 class VLogsOptions:
-    def __init__(self, url=None, appId=None, apiKey=None, connectionTimeout=None, testConnection=None, target: Target = None):
+    def __init__(self, url=None, appId=None, apiKey=None, connection_timeout=None, test_connection=None, target: Target = None):
         self.url = url
         self.appId = appId
         self.apiKey = apiKey
-        self.connectionTimeout = connectionTimeout
-        self.testConnection = testConnection
+        self.connection_timeout = connection_timeout
+        self.test_connection = test_connection
         self.target = target
 
     @staticmethod
@@ -412,8 +427,8 @@ class VLogsOptionsBuilder:
         self._url = None
         self._appId = None
         self._apiKey = None
-        self._connectionTimeout = None
-        self._testConnection = None
+        self._connection_timeout = None
+        self._test_connection = None
         self._target = None
 
     def url(self, url):
@@ -428,12 +443,12 @@ class VLogsOptionsBuilder:
         self._apiKey = apiKey
         return self
 
-    def connectionTimeout(self, connectionTimeout):
-        self._connectionTimeout = connectionTimeout
+    def connection_timeout(self, connection_timeout):
+        self._connection_timeout = connection_timeout
         return self
 
-    def testConnection(self, testConnection):
-        self._testConnection = testConnection
+    def test_connection(self, test_connection):
+        self._test_connection = test_connection
         return self
 
     def target(self, target):
@@ -459,7 +474,7 @@ class VLogsOptionsBuilder:
             url=self._url,
             appId=self._appId,
             apiKey=self._apiKey,
-            connectionTimeout=self._connectionTimeout,
-            testConnection=self._testConnection,
+            connection_timeout=self._connection_timeout,
+            test_connection=self._test_connection,
             target=self._target,
         )

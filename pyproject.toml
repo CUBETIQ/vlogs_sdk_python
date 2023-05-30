@@ -9,7 +9,13 @@ packages = [{include = "vlogs"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
+requests = "^2.31.0"
 
+[tool.poetry.dev-dependencies]
+pytest = "^6.2"
+
+# [tool.poetry.scripts]
+# test = "pytest"
 
 [build-system]
 requires = ["poetry-core"]
